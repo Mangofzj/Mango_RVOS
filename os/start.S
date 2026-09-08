@@ -1,0 +1,31 @@
+#include "platform.h"
+
+	# 每个 hart 的栈大小是 1024 字节
+	.equ	STACK_SIZE, 1024
+
+	.global	_start
+
+	.text
+_start:
+	# park id 不为 0 的 hart
+	csrr	t0, mhartid		# 读取当前 hart 的 id
+	mv	tp, t0			# 把当前 hart 的 id 存入 tp，供后续使用
+	bnez	t0, park		# 若非 0 号 hart，跳到 park 原地等待
+
+	# 初始化栈：栈自高地址向低地址增长，故 sp 指向栈区末尾
+	slli	t0, t0, 10		# hart id 左移 10 位（×1024），得本 hart 栈区偏移
+	la	sp, stacks + STACK_SIZE	# 先把 sp 指向第一个栈的末尾
+	add	sp, sp, t0		# 再把当前 hart 的 sp 移到它在栈区中的位置
+
+	j	start_kernel		# 0 号 hart 跳转到 C 代码
+
+park:
+	wfi
+	j	park
+
+	# 标准 RISC-V 调用约定要求栈指针 sp 始终 16 字节对齐
+.balign 16
+stacks:
+	.skip	STACK_SIZE * NR_CPUS	# 为所有 hart 分配栈空间
+
+	.end				# 文件结束
