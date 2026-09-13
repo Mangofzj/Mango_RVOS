@@ -17,14 +17,14 @@
 #define LSR_RX_READY (1 << 0)
 #define LSR_TX_IDLE  (1 << 5)
 
-#define UART_REG(reg) ((volatile uint8_t *)(UART0 + reg))
+#define UART_REG(reg) ((volatile uint8_t *)(UART0_BASE + reg))
 
 #define uart_read_reg(reg) (*(UART_REG(reg)))
 #define uart_write_reg(reg, val) (*(UART_REG(reg)) = (val))
 
 void uart_init(void)
 {
-	uart_write_reg(IER, 0x00);  // 关闭中断
+	uart_write_reg(IER, 0x00);  /* 关闭中断 */
 
 	/*
 	 * 设置波特率

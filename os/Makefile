@@ -9,27 +9,32 @@ GDB    := gdb-multiarch
 CFLAGS := -march=rv32g -mabi=ilp32 -nostdlib -fno-builtin -g -Wall
 
 # 汇编 / C 源文件：每新增文件就加进对应列表，start.S 必须保持在最前
-SRCS_ASM := start.S
+SRCS_ASM := start.S mem.S
 SRCS_C   := kernel.c uart.c
 
 OBJS := $(addprefix $(OUT)/, $(SRCS_ASM:.S=.o) $(SRCS_C:.c=.o))
 ELF  := $(OUT)/os.elf
 BIN  := $(OUT)/os.bin
 
-# 代码段放 0x80000000（QEMU virt 的复位入口）
-LDFLAGS := -Ttext=0x80000000
+# 链接脚本：os.ld 中含 #include，需先预处理展开宏
+LDSCRIPT := $(OUT)/os.ld.generated
+LDFLAGS  := -T $(LDSCRIPT)
 
 all: $(ELF)
 
-$(ELF): $(OBJS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^
+$(ELF): $(OBJS) $(LDSCRIPT)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJS)
 	$(OBJCOPY) -O binary $(ELF) $(BIN)
 
+$(LDSCRIPT): os.ld platform.h | $(OUT)
+	$(CC) -E -P -x c $(CFLAGS) os.ld -o $@
+
+# -MMD -MP 只加在这里，让每个 .o 顺带生成 .d 记录头文件依赖；放进 CFLAGS 会连 os.ld 预处理那步也生成 .d
 $(OUT)/%.o: %.S | $(OUT)
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -MMD -MP -c -o $@ $<
 
 $(OUT)/%.o: %.c | $(OUT)
-	$(CC) $(CFLAGS) -c -o $@ $<
+	$(CC) $(CFLAGS) -MMD -MP -c -o $@ $<
 
 $(OUT):
 	mkdir -p $@
@@ -46,5 +51,7 @@ code: $(ELF)
 
 clean:
 	rm -rf $(OUT)
+
+-include $(OBJS:.o=.d)
 
 .PHONY: all run debug code clean
