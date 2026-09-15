@@ -1,4 +1,4 @@
-#include "os.h"
+#include "kernel.h"
 
 /* 以下全局变量定义在 mem.S 中 */
 extern ptr_t TEXT_START;

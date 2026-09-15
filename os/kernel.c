@@ -1,6 +1,6 @@
-#include "os.h"
+#include "kernel.h"
 
-/* 以下函数只应在此处被调用一次，因此只在此处声明，不放进 os.h */
+/* 以下函数只应在此处被调用一次，因此只在此处声明，不放进 kernel.h */
 extern void uart_init(void);
 extern void page_init(void);
 extern void sched_init(void);

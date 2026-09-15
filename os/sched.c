@@ -1,4 +1,4 @@
-#include "os.h"
+#include "kernel.h"
 
 /* 定义在 entry.S 中 */
 extern void switch_to(struct context *next);

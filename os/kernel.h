@@ -1,5 +1,5 @@
-#ifndef __OS_H__
-#define __OS_H__
+#ifndef __KERNEL_H__
+#define __KERNEL_H__
 
 #include "types.h"
 #include "platform.h"
@@ -54,4 +54,4 @@ struct context {
 extern int task_create(void (*task)(void));
 extern void task_delay(volatile int count);
 
-#endif /* __OS_H__ */
+#endif /* __KERNEL_H__ */
