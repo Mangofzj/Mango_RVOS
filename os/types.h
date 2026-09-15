@@ -6,6 +6,7 @@ typedef unsigned short uint16_t;
 typedef unsigned int uint32_t;
 typedef unsigned long long uint64_t;
 
-typedef uint32_t ptr_t;
+typedef uint32_t ptr_t;  /* 指针宽度 */
+typedef uint32_t reg_t;  /* 寄存器宽度 */
 
 #endif /* __TYPES_H__ */
