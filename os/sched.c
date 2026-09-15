@@ -5,7 +5,10 @@ extern void switch_to(struct context *next);
 
 #define TASK_STACK_SIZE 1024
 
-/* 标准 RISC-V 调用约定要求栈指针 sp 始终 16 字节对齐 */
+/*
+ * 为任务 0 在 .bss 中静态预留任务栈空间，该空间在链接阶段确定大小和位置；不同于 start.S 中内核启动阶段使用的启动栈，任务切换后 sp 会指向这里并在其中动态保存栈帧数据
+ * 标准 RISC-V 调用约定要求栈指针 sp 始终 16 字节对齐
+ */
 uint8_t __attribute__((aligned(16))) task_stack[TASK_STACK_SIZE];
 struct context task_ctx;
 
