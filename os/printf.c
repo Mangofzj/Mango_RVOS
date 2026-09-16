@@ -1,19 +1,19 @@
 #include "kernel.h"
 
-static int vsnprintf(char * out, size_t n, const char* s, va_list vl)
+static int vsnprintf(char *out, size_t n, const char *s, va_list vl)
 {
-	int format = 0;
-	int longarg = 0;
+	int in_format = 0;
+	int is_long = 0;
 	size_t pos = 0;
 	for (; *s; s++) {
-		if (format) {
+		if (in_format) {
 			switch(*s) {
 			case 'l': {
-				longarg = 1;
+				is_long = 1;
 				break;
 			}
 			case 'p': {
-				longarg = 1;
+				is_long = 1;
 				if (out && pos < n) {
 					out[pos] = '0';
 				}
@@ -24,8 +24,8 @@ static int vsnprintf(char * out, size_t n, const char* s, va_list vl)
 				pos++;
 			}
 			case 'x': {
-				long num = longarg ? va_arg(vl, long) : va_arg(vl, int);
-				int hexdigits = 2*(longarg ? sizeof(long) : sizeof(int))-1;
+				long num = is_long ? va_arg(vl, long) : va_arg(vl, int);
+				int hexdigits = 2*(is_long ? sizeof(long) : sizeof(int))-1;
 				for(int i = hexdigits; i >= 0; i--) {
 					int d = (num >> (4*i)) & 0xF;
 					if (out && pos < n) {
@@ -33,12 +33,12 @@ static int vsnprintf(char * out, size_t n, const char* s, va_list vl)
 					}
 					pos++;
 				}
-				longarg = 0;
-				format = 0;
+				is_long = 0;
+				in_format = 0;
 				break;
 			}
 			case 'd': {
-				long num = longarg ? va_arg(vl, long) : va_arg(vl, int);
+				long num = is_long ? va_arg(vl, long) : va_arg(vl, int);
 				if (num < 0) {
 					num = -num;
 					if (out && pos < n) {
@@ -55,12 +55,12 @@ static int vsnprintf(char * out, size_t n, const char* s, va_list vl)
 					num /= 10;
 				}
 				pos += digits;
-				longarg = 0;
-				format = 0;
+				is_long = 0;
+				in_format = 0;
 				break;
 			}
 			case 's': {
-				const char* s2 = va_arg(vl, const char*);
+				const char *s2 = va_arg(vl, const char *);
 				while (*s2) {
 					if (out && pos < n) {
 						out[pos] = *s2;
@@ -68,8 +68,8 @@ static int vsnprintf(char * out, size_t n, const char* s, va_list vl)
 					pos++;
 					s2++;
 				}
-				longarg = 0;
-				format = 0;
+				is_long = 0;
+				in_format = 0;
 				break;
 			}
 			case 'c': {
@@ -77,15 +77,15 @@ static int vsnprintf(char * out, size_t n, const char* s, va_list vl)
 					out[pos] = (char)va_arg(vl,int);
 				}
 				pos++;
-				longarg = 0;
-				format = 0;
+				is_long = 0;
+				in_format = 0;
 				break;
 			}
 			default:
 				break;
 			}
 		} else if (*s == '%') {
-			format = 1;
+			in_format = 1;
 		} else {
 			if (out && pos < n) {
 				out[pos] = *s;
@@ -103,7 +103,7 @@ static int vsnprintf(char * out, size_t n, const char* s, va_list vl)
 
 static char out_buf[1000];
 
-static int vprintf(const char* s, va_list vl)
+static int vprintf(const char *s, va_list vl)
 {
 	int res = vsnprintf(NULL, -1, s, vl);
 	if (res+1 >= sizeof(out_buf)) {
@@ -115,7 +115,7 @@ static int vprintf(const char* s, va_list vl)
 	return res;
 }
 
-int printf(const char* s, ...)
+int printf(const char *s, ...)
 {
 	int res = 0;
 	va_list vl;
@@ -130,5 +130,5 @@ void panic(const char *s)
 	printf("panic: ");
 	printf("%s", s);
 	printf("\n");
-	while(1){};
+	while (1) {};
 }
