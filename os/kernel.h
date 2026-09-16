@@ -10,7 +10,7 @@
 extern int uart_putc(char ch);
 extern void uart_puts(char *s);
 
-extern int printf(const char* s, ...);
+extern int printf(const char *s, ...);
 extern void panic(const char *s);
 
 extern void *page_alloc(int npages);
@@ -52,6 +52,7 @@ struct context {
 };
 
 extern int task_create(void (*task)(void));
+extern void task_yield(void);
 extern void task_delay(volatile int count);
 
 #endif /* __KERNEL_H__ */
