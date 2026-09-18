@@ -70,6 +70,30 @@
 
 .text
 
+# 机器态下发生中断或异常时进入这里
+.global	trap_vector
+.balign	4	# 陷阱向量基址必须 4 字节对齐
+trap_vector:
+	csrrw	t6, mscratch, t6	# 交换 t6 与 mscratch
+	reg_save	t6		# 保存当前任务的上下文
+
+	mv	t5, t6			# t5 指向当前任务的上下文
+	csrr	t6, mscratch		# 取回真正的 t6
+	STORE	t6, 30*REG_SIZE(t5)	# 以 t5 为基址补存 t6
+
+	csrw	mscratch, t5		# 上下文指针写回 mscratch
+
+	csrr	a0, mepc		# 调用 trap.c 中用 C 实现的陷阱处理函数
+	csrr	a1, mcause
+	call	trap_handler
+
+	csrw	mepc, a0		# trap_handler 通过 a0 返回返回地址
+
+	csrr	t6, mscratch
+	reg_restore	t6		# 恢复当前任务的上下文
+
+	mret
+
 # void switch_to(struct context *next)
 # a0 存放下一个任务的上下文指针
 # mscratch 存放当前任务的上下文指针

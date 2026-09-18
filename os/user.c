@@ -1,10 +1,16 @@
 #include "kernel.h"
 
+/* 定义在 trap.c 中 */
+extern void trap_test(void);
+
 void user_task0(void)
 {
 	uart_puts("Task 0 Started!\n");
 	while (1) {
 		uart_puts("Task 0 Running...\n");
+
+		trap_test();
+
 		task_delay(1000);
 		task_yield();
 	}

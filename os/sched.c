@@ -17,11 +17,6 @@ struct context task_ctx[NR_TASKS];
 static int top = 0;
 static int current = -1;
 
-static void w_mscratch(reg_t x)
-{
-	asm volatile("csrw mscratch, %0" : : "r"(x));
-}
-
 void sched_init(void)
 {
 	w_mscratch(0);
