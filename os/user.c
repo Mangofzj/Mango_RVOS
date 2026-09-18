@@ -2,7 +2,7 @@
 
 void user_task0(void)
 {
-	uart_puts("Task 0 Created!\n");
+	uart_puts("Task 0 Started!\n");
 	while (1) {
 		uart_puts("Task 0 Running...\n");
 		task_delay(1000);
@@ -12,7 +12,7 @@ void user_task0(void)
 
 void user_task1(void)
 {
-	uart_puts("Task 1 Created!\n");
+	uart_puts("Task 1 Started!\n");
 	while (1) {
 		uart_puts("Task 1 Running...\n");
 		task_delay(1000);

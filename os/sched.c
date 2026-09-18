@@ -36,7 +36,7 @@ void sched_init(void)
 void schedule(void)
 {
 	if (top <= 0) {
-		panic("Number of task should be greater than zero!");
+		panic("No task to schedule!");
 		return;
 	}
 	
