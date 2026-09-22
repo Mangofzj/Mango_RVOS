@@ -3,6 +3,7 @@
 /* 定义在 entry.S 中 */
 extern void trap_vector(void);
 extern void uart_isr(void);
+extern void timer_isr(void);
 
 /**
  * @brief 设置机器态陷阱向量基址
@@ -50,6 +51,7 @@ reg_t trap_handler(reg_t mepc, reg_t mcause)
 			break;
 		case IRQ_M_TIMER:
 			uart_puts("Timer interrupt!\n");
+			timer_isr();
 			break;
 		case IRQ_M_EXTERNAL:
 			uart_puts("External interrupt!\n");

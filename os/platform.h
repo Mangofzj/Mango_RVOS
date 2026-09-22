@@ -18,4 +18,11 @@
 #define PLIC_MCLAIM(hart) (PLIC_BASE + 0x200004 + PLIC_MCONTEXT_ID(hart) * 0x1000)	/* 机器态中断认领寄存器（读模式） */
 #define PLIC_MCOMPLETE(hart) (PLIC_BASE + 0x200004 + PLIC_MCONTEXT_ID(hart) * 0x1000)	/* 机器态中断完成寄存器（写模式） */
 
+#define CLINT_BASE 0x2000000L	/* CLINT 基地址 */
+#define CLINT_MSIP(hart) (CLINT_BASE + (hart) * 4)	/* 机器态软件中断寄存器 */
+#define CLINT_MTIMECMP(hart) (CLINT_BASE + 0x4000 + (hart) * 8)	/* 机器态定时器比较寄存器 */
+#define CLINT_MTIME (CLINT_BASE + 0xBFF8)	/* 机器态定时器计数寄存器 */
+
+#define CLINT_TIMEBASE_FREQ 10000000	/* 定时器时基频率 */
+
 #endif /* __PLATFORM_H__ */
