@@ -14,6 +14,21 @@ void trap_init(void)
 	w_mtvec((reg_t)trap_vector);
 }
 
+static void external_interrupt_handler(void)
+{
+	int irq = plic_claim();
+
+	if (irq == UART0_IRQ) {
+		uart_isr();
+	} else if (irq) {
+		printf("unexpected interrupt irq = %d\n", irq);
+	}
+
+	if (irq) {
+		plic_complete(irq);
+	}
+}
+
 /**
  * @brief 陷阱处理函数，按 mcause 区分中断与异常并分派
  * @note 无
@@ -32,15 +47,13 @@ reg_t trap_handler(reg_t mepc, reg_t mcause)
 		case IRQ_M_SOFTWARE:
 			uart_puts("Software interrupt!\n");
 			break;
-
 		case IRQ_M_TIMER:
 			uart_puts("Timer interrupt!\n");
 			break;
-
 		case IRQ_M_EXTERNAL:
 			uart_puts("External interrupt!\n");
+			external_interrupt_handler();
 			break;
-
 		default:
 			printf("Unknown interrupt! Code = %d\n", cause_code);
 			break;

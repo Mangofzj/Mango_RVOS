@@ -10,6 +10,10 @@
 
 extern int uart_putc(char ch);
 extern void uart_puts(char *s);
+extern void uart_isr(void);
+
+extern int plic_claim(void);
+extern void plic_complete(int irq);
 
 extern int printf(const char *s, ...);
 extern void panic(const char *s);

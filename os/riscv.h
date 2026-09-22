@@ -1,6 +1,54 @@
 #ifndef __RISCV_H__
 #define __RISCV_H__
 
+#include "types.h"
+
+/* 读 tp 线程指针寄存器，RVOS 中用于存放 hart id */
+static inline reg_t r_tp()
+{
+	reg_t val;
+	asm volatile("mv %0, tp" : "=r"(val));
+	return val;
+}
+
+/* mstatus 机器态状态寄存器的掩码 */
+#define MSTATUS_MIE (1 << 3)
+#define MSTATUS_SIE (1 << 1)
+#define MSTATUS_UIE (1 << 0)
+
+/* 读 mstatus 机器态状态寄存器 */
+static inline reg_t r_mstatus()
+{
+	reg_t val;
+	asm volatile("csrr %0, mstatus" : "=r"(val));
+	return val;
+}
+
+/* 写 mstatus 机器态状态寄存器 */
+static inline void w_mstatus(reg_t val)
+{
+	asm volatile("csrw mstatus, %0" : : "r"(val));
+}
+
+/* mie 机器态中断使能寄存器的掩码 */
+#define MIE_MSIE (1 << 3)	/* 软件 */
+#define MIE_MTIE (1 << 7)	/* 定时器 */
+#define MIE_MEIE (1 << 11)	/* 外部 */
+
+/* 读 mie 机器态中断使能寄存器 */
+static inline reg_t r_mie()
+{
+	reg_t val;
+	asm volatile("csrr %0, mie" : "=r"(val));
+	return val;
+}
+
+/* 写 mie 机器态中断使能寄存器 */
+static inline void w_mie(reg_t val)
+{
+	asm volatile("csrw mie, %0" : : "r"(val));
+}
+
 /* 写 mtvec 机器态陷阱向量基址寄存器 */
 static inline void w_mtvec(reg_t val)
 {

@@ -40,6 +40,10 @@ void uart_init(void)
 	/* 设置异步数据格式：8 位数据、1 位停止位、无校验、无 break，并关闭除数锁存 */
 	lcr = 0;
 	uart_write_reg(LCR, lcr | (3 << 0));
+
+	/* 使能接收中断 */
+	uint8_t ier = uart_read_reg(IER);
+	uart_write_reg(IER, ier | (1 << 0));
 }
 
 int uart_putc(char ch)
@@ -53,4 +57,17 @@ void uart_puts(char *s)
 	while (*s) {
 		uart_putc(*s++);
 	}
+}
+
+static inline int uart_getc(void)
+{
+	while ((uart_read_reg(LSR) & LSR_RX_READY) == 0);
+	return uart_read_reg(RHR);
+}
+
+/* 处理 UART 中断，有输入到达时触发，由 trap.c 调用 */
+void uart_isr(void)
+{
+	uart_putc((char)uart_getc());
+	uart_putc('\n');
 }

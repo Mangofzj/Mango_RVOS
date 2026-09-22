@@ -4,6 +4,7 @@
 extern void uart_init(void);
 extern void page_init(void);
 extern void trap_init(void);
+extern void plic_init(void);
 extern void sched_init(void);
 extern void schedule(void);
 extern void user_main(void);
@@ -16,6 +17,8 @@ void start_kernel(void)
 	page_init();
 
 	trap_init();
+
+	plic_init();
 
 	sched_init();
 
