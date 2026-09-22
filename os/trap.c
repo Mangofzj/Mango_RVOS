@@ -2,6 +2,7 @@
 
 /* 定义在 entry.S 中 */
 extern void trap_vector(void);
+extern void uart_isr(void);
 
 /**
  * @brief 设置机器态陷阱向量基址
@@ -21,7 +22,7 @@ static void external_interrupt_handler(void)
 	if (irq == UART0_IRQ) {
 		uart_isr();
 	} else if (irq) {
-		printf("unexpected interrupt irq = %d\n", irq);
+		printf("Unexpected interrupt! IRQ = %d\n", irq);
 	}
 
 	if (irq) {

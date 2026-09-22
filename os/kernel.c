@@ -6,8 +6,8 @@ extern void page_init(void);
 extern void trap_init(void);
 extern void plic_init(void);
 extern void sched_init(void);
-extern void schedule(void);
 extern void user_main(void);
+extern void schedule(void);
 
 void start_kernel(void)
 {
