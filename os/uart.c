@@ -29,7 +29,7 @@ void uart_init(void)
 	/*
 	 * 设置波特率
 	 * 除数锁存器与收发/中断使能寄存器共用地址，要先把 LCR 位 7（DLAB，除数锁存器访问位）置 1，之后对 DLL/DLM 的读写才指向除数寄存器
-	 * 1.8432 MHz 晶振下用 38.4K 波特率，对应除数 3（0x0003），拆成两字节：DLL 存低字节 0x03，DLM 存高字节 0x00
+	 * 1.8432 MHz 晶振下用 38.4K 波特率，对应除数 3（0x0003），拆成两字节，DLL 存低字节 0x03，DLM 存高字节 0x00
 	 * 对 QEMU-virt 来说波特率没有实际作用，这里仅走一遍流程
 	 */
 	uint8_t lcr = uart_read_reg(LCR);
@@ -37,7 +37,7 @@ void uart_init(void)
 	uart_write_reg(DLL, 0x03);
 	uart_write_reg(DLM, 0x00);
 
-	/* 设置异步数据格式：8 位数据、1 位停止位、无校验、无 break，并关闭除数锁存 */
+	/* 设置异步数据格式，8 位数据、1 位停止位、无校验、无 break，并关闭除数锁存 */
 	lcr = 0;
 	uart_write_reg(LCR, lcr | (3 << 0));
 

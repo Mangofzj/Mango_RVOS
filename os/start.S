@@ -21,7 +21,7 @@ _start:
 	addi	a0, a0, 4
 	bltu	a0, a1, 1b
 2:
-	# 初始化栈：栈自高地址向低地址增长，故 sp 指向栈区末尾
+	# 初始化栈，栈自高地址向低地址增长，故 sp 指向栈区末尾
 	slli	t0, t0, 10		# hart id 左移 10 位（×1024），得本 hart 栈区偏移
 	la	sp, stacks + KERNEL_STACK_SIZE	# 先把 sp 指向第一个栈的末尾
 	add	sp, sp, t0		# 再把当前 hart 的 sp 移到它在栈区中的位置

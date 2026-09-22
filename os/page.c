@@ -73,7 +73,7 @@ static inline ptr_t page_align_up(ptr_t addr)
 }
 
 /**
- * @brief 初始化页分配器：划分堆池并建立页描述符数组
+ * @brief 初始化页分配器，划分堆池并建立页描述符数组
  * @note 无
  * @param 无
  * @return 无
