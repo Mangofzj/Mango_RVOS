@@ -30,9 +30,6 @@ void timer_init(void)
 
 	/* 使能机器态定时器中断 */
 	w_mie(r_mie() | MIE_MTIE);
-
-	/* 使能机器态全局中断 */
-	w_mstatus(r_mstatus() | MSTATUS_MIE);
 }
 
 /**
@@ -47,4 +44,6 @@ void timer_isr(void)
 	printf("Tick: %d\n", tick);
 
 	timer_load(TIMER_INTERVAL);
+
+	schedule();
 }

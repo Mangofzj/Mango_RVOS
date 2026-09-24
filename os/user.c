@@ -3,10 +3,13 @@
 void user_task0(void)
 {
 	uart_puts("Task 0 Started!\n");
+
+	task_yield();
+	uart_puts("Task 0 Resumed!\n");
+
 	while (1) {
 		uart_puts("Task 0 Running...\n");
 		task_delay(1000);
-		task_yield();
 	}
 }
 
@@ -16,7 +19,6 @@ void user_task1(void)
 	while (1) {
 		uart_puts("Task 1 Running...\n");
 		task_delay(1000);
-		task_yield();
 	}
 }
 

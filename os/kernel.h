@@ -50,11 +50,15 @@ struct context {
 	reg_t t4;
 	reg_t t5;
 	reg_t t6;
+
+	/* 保存下一轮调度时运行的 pc */
+	reg_t pc;
 };
 
 extern int task_create(void (*task)(void));
 extern void task_yield(void);
 extern void task_delay(volatile int count);
+extern void schedule(void);
 
 extern int plic_claim(void);
 extern void plic_complete(int irq);

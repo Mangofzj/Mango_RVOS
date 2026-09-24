@@ -20,6 +20,9 @@ static int current = -1;
 void sched_init(void)
 {
 	w_mscratch(0);
+
+	/* 使能机器态软件中断 */
+	w_mie(r_mie() | MIE_MSIE);
 }
 
 /**
@@ -50,7 +53,7 @@ int task_create(void (*task)(void))
 {
 	if (top < NR_TASKS) {
 		task_ctx[top].sp = (reg_t)&task_stack[top][TASK_STACK_SIZE];
-		task_ctx[top].ra = (reg_t)task;
+		task_ctx[top].pc = (reg_t)task;
 		top++;
 		return 0;
 	} else {
@@ -67,7 +70,10 @@ int task_create(void (*task)(void))
  */
 void task_yield(void)
 {
-	schedule();
+	/* 触发机器态软件中断 */
+	int hart = r_tp();
+
+	*(uint32_t*)CLINT_MSIP(hart) = 1;
 }
 
 void task_delay(volatile int count)

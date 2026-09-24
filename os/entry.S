@@ -81,6 +81,9 @@ trap_vector:
 	csrr	t6, mscratch		# 取回真正的 t6
 	STORE	t6, 30*REG_SIZE(t5)	# 以 t5 为基址补存 t6
 
+	csrr	a0, mepc		# 保存 mepc 到当前任务的上下文
+	STORE	a0, 31*REG_SIZE(t5)
+
 	csrw	mscratch, t5		# 上下文指针写回 mscratch
 
 	csrr	a0, mepc		# 调用 trap.c 中用 C 实现的陷阱处理函数
@@ -101,23 +104,14 @@ trap_vector:
 .global	switch_to
 .balign 4
 switch_to:
-	# 交换 t6 与 mscratch，交换后 t6 指向当前任务的上下文
-	# 首次调用时 mscratch 为 0（见 sched_init），t6 也为 0，此时无需保存
-	csrrw	t6, mscratch, t6
-	beqz	t6, 1f
-
-	reg_save	t6		# 保存当前任务的上下文
-
-	mv	t5, t6			# t5 指向当前任务的上下文
-	csrr	t6, mscratch		# 取回真正的 t6
-	STORE	t6, 30*REG_SIZE(t5)	# 以 t5 为基址补存 t6
-
-1:
 	csrw	mscratch, a0		# mscratch 改指向下一个任务的上下文
+
+	LOAD	a1, 31*REG_SIZE(a0)	# 设置 mepc 为下一个任务的 pc
+	csrw	mepc, a1
 
 	mv	t6, a0			# 用 t6 指向下一个任务的上下文
 	reg_restore	t6
 
-	ret
+	mret				# 注意会顺带使能全局中断
 
 .end

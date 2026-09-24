@@ -48,6 +48,12 @@ reg_t trap_handler(reg_t mepc, reg_t mcause)
 		switch (cause_code) {
 		case IRQ_M_SOFTWARE:
 			uart_puts("Software interrupt!\n");
+
+			int hart = r_tp();  /* 清除 mip 中的 MSIP 位以应答软件中断 */
+
+			*(uint32_t*)CLINT_MSIP(hart) = 0;
+
+			schedule();
 			break;
 		case IRQ_M_TIMER:
 			uart_puts("Timer interrupt!\n");
