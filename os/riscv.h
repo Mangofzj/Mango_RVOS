@@ -12,9 +12,9 @@ static inline reg_t r_tp()
 }
 
 /* mstatus 机器态状态寄存器的掩码 */
-#define MSTATUS_MIE (1 << 3)
-#define MSTATUS_SIE (1 << 1)
-#define MSTATUS_UIE (1 << 0)
+#define MSTATUS_MIE (1 << 3)	/* 机器态全局中断使能 */
+#define MSTATUS_SIE (1 << 1)	/* 监管态全局中断使能 */
+#define MSTATUS_UIE (1 << 0)	/* 用户态全局中断使能 */
 
 /* 读 mstatus 机器态状态寄存器 */
 static inline reg_t r_mstatus()
@@ -31,9 +31,9 @@ static inline void w_mstatus(reg_t val)
 }
 
 /* mie 机器态中断使能寄存器的掩码 */
-#define MIE_MSIE (1 << 3)	/* 软件 */
-#define MIE_MTIE (1 << 7)	/* 定时器 */
-#define MIE_MEIE (1 << 11)	/* 外部 */
+#define MIE_MSIE (1 << 3)	/* 机器态软件中断使能 */
+#define MIE_MTIE (1 << 7)	/* 机器态定时器中断使能 */
+#define MIE_MEIE (1 << 11)	/* 机器态外部中断使能 */
 
 /* 读 mie 机器态中断使能寄存器 */
 static inline reg_t r_mie()
