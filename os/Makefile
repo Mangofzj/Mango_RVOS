@@ -10,7 +10,7 @@ CFLAGS := -march=rv32g -mabi=ilp32 -nostdlib -fno-builtin -g -Wall
 
 # 汇编 / C 源文件：每新增文件就加进对应列表，start.S 必须保持在最前
 SRCS_ASM := start.S mem.S entry.S
-SRCS_C   := kernel.c uart.c printf.c page.c sched.c trap.c user.c plic.c timer.c
+SRCS_C   := kernel.c uart.c printf.c page.c sched.c trap.c user.c plic.c timer.c lock.c
 
 OBJS := $(addprefix $(OUT)/, $(SRCS_ASM:.S=.o) $(SRCS_C:.c=.o))
 ELF  := $(OUT)/os.elf

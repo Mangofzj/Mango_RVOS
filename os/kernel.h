@@ -63,4 +63,7 @@ extern void schedule(void);
 extern int plic_claim(void);
 extern void plic_complete(int irq);
 
+extern int spin_lock(void);
+extern int spin_unlock(void);
+
 #endif /* __KERNEL_H__ */
