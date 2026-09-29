@@ -52,8 +52,8 @@ void user_task1(void)
 	}
 }
 
-/* 注意不要在 user_main 中无限循环 */
-void user_main(void)
+/* 注意不要在 user_init 中无限循环 */
+void user_init(void)
 {
 	task_create(user_task0);
 	task_create(user_task1);
