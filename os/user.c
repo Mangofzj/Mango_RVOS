@@ -2,25 +2,44 @@
 
 #define TASK_DELAY_COUNT 4000	/* 延时量，task_delay 内部再乘以 50000 */
 
-#define USE_LOCK	/* 打开临界区加锁 */
+struct userdata {
+	int counter;
+	char *str;
+};
+
+struct userdata person = {0, "JACK"};
+
+void user_timer_handler(void *arg)
+{
+	if (NULL == arg)
+		return;
+
+	struct userdata *param = (struct userdata *)arg;
+
+	param->counter++;
+	printf("TIMEOUT: %s = %d\n", param->str, param->counter);
+}
 
 void user_task0(void)
 {
 	uart_puts("Task 0 Started!\n");
+
+	struct timer *t1 = timer_create(user_timer_handler, &person, 3);
+	if (NULL == t1) {
+		uart_puts("timer_create() failed!\n");
+	}
+	struct timer *t2 = timer_create(user_timer_handler, &person, 5);
+	if (NULL == t2) {
+		uart_puts("timer_create() failed!\n");
+	}
+	struct timer *t3 = timer_create(user_timer_handler, &person, 7);
+	if (NULL == t3) {
+		uart_puts("timer_create() failed!\n");
+	}
+
 	while (1) {
-#ifdef USE_LOCK
-		/* 临界区：整轮 5 次打印必须连续完成，不被定时器中断打断 */
-		spin_lock();
-#endif
-		uart_puts("Task 0 Loop Begin!\n");
-		for (int i = 0; i < 5; i++) {
-			uart_puts("Task 0 Running...\n");
-			task_delay(TASK_DELAY_COUNT);
-		}
-		uart_puts("Task 0 Loop End!\n");
-#ifdef USE_LOCK
-		spin_unlock();
-#endif
+		uart_puts("Task 0 Running...\n");
+		task_delay(TASK_DELAY_COUNT);
 	}
 }
 
@@ -28,12 +47,8 @@ void user_task1(void)
 {
 	uart_puts("Task 1 Started!\n");
 	while (1) {
-		uart_puts("Task 1 Loop Begin!\n");
-		for (int i = 0; i < 5; i++) {
-			uart_puts("Task 1 Running...\n");
-			task_delay(TASK_DELAY_COUNT);
-		}
-		uart_puts("Task 1 Loop End!\n");
+		uart_puts("Task 1 Running...\n");
+		task_delay(TASK_DELAY_COUNT);
 	}
 }
 
