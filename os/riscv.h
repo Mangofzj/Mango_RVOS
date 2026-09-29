@@ -4,7 +4,7 @@
 #include "types.h"
 
 /* 读 tp 线程指针寄存器，RVOS 中用于存放 hart id */
-static inline reg_t r_tp()
+static inline reg_t r_tp(void)
 {
 	reg_t val;
 	asm volatile("mv %0, tp" : "=r"(val));
@@ -17,7 +17,7 @@ static inline reg_t r_tp()
 #define MSTATUS_UIE (1 << 0)	/* 用户态全局中断使能 */
 
 /* 读 mstatus 机器态状态寄存器 */
-static inline reg_t r_mstatus()
+static inline reg_t r_mstatus(void)
 {
 	reg_t val;
 	asm volatile("csrr %0, mstatus" : "=r"(val));
@@ -36,7 +36,7 @@ static inline void w_mstatus(reg_t val)
 #define MIE_MEIE (1 << 11)	/* 机器态外部中断使能 */
 
 /* 读 mie 机器态中断使能寄存器 */
-static inline reg_t r_mie()
+static inline reg_t r_mie(void)
 {
 	reg_t val;
 	asm volatile("csrr %0, mie" : "=r"(val));

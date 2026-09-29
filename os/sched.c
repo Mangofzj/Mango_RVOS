@@ -37,7 +37,7 @@ void schedule(void)
 		panic("No task to schedule!");
 		return;
 	}
-	
+
 	current = (current + 1) % top;
 	struct context *next = &task_ctx[current];
 	switch_to(next);
@@ -59,7 +59,6 @@ int task_create(void (*task)(void))
 	} else {
 		return -1;
 	}
-	
 }
 
 /**

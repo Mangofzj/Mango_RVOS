@@ -25,11 +25,11 @@ static int vsnprintf(char *out, size_t n, const char *s, va_list vl)
 			}
 			case 'x': {
 				long num = is_long ? va_arg(vl, long) : va_arg(vl, int);
-				int hexdigits = 2*(is_long ? sizeof(long) : sizeof(int))-1;
+				int hexdigits = 2 * (is_long ? sizeof(long) : sizeof(int)) - 1;
 				for(int i = hexdigits; i >= 0; i--) {
-					int d = (num >> (4*i)) & 0xF;
+					int d = (num >> (4 * i)) & 0xF;
 					if (out && pos < n) {
-						out[pos] = (d < 10 ? '0'+d : 'a'+d-10);
+						out[pos] = (d < 10 ? '0' + d : 'a' + d - 10);
 					}
 					pos++;
 				}
@@ -48,7 +48,7 @@ static int vsnprintf(char *out, size_t n, const char *s, va_list vl)
 				}
 				long digits = 1;
 				for (long nn = num; nn /= 10; digits++);
-				for (int i = digits-1; i >= 0; i--) {
+				for (int i = digits - 1; i >= 0; i--) {
 					if (out && pos + i < n) {
 						out[pos + i] = '0' + (num % 10);
 					}
@@ -92,11 +92,11 @@ static int vsnprintf(char *out, size_t n, const char *s, va_list vl)
 			}
 			pos++;
 		}
-    	}
+	}
 	if (out && pos < n) {
 		out[pos] = 0;
 	} else if (out && n) {
-		out[n-1] = 0;
+		out[n - 1] = 0;
 	}
 	return pos;
 }
@@ -106,7 +106,7 @@ static char out_buf[1000];
 static int vprintf(const char *s, va_list vl)
 {
 	int res = vsnprintf(NULL, -1, s, vl);
-	if (res+1 >= sizeof(out_buf)) {
+	if (res + 1 >= sizeof(out_buf)) {
 		uart_puts("Error: output string size overflow\n");
 		while(1) {}
 	}

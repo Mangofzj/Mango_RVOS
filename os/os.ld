@@ -66,7 +66,7 @@ SECTIONS
 		PROVIDE(_data_end = .);
 	} > ram
 
-	.bss :{
+	.bss : {
 		PROVIDE(_bss_start = .);
 		*(.sbss .sbss.*)
 		*(.bss .bss.*)

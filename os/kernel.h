@@ -9,7 +9,7 @@
 #include <stdarg.h>
 
 extern int uart_putc(char ch);
-extern void uart_puts(char *s);
+extern void uart_puts(const char *s);
 
 extern int printf(const char *s, ...);
 extern void panic(const char *s);
