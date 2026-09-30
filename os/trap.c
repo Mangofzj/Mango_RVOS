@@ -36,9 +36,10 @@ static void external_interrupt_handler(void)
  * @note 无
  * @param mepc 陷阱发生时的程序计数器
  * @param mcause 陷阱原因，最高位为 1 表示中断，其余位为编码
+ * @param ctx 当前任务的上下文
  * @return 陷阱返回后继续执行的地址
  */
-reg_t trap_handler(reg_t mepc, reg_t mcause)
+reg_t trap_handler(reg_t mepc, reg_t mcause, struct context *ctx)
 {
 	reg_t return_pc = mepc;
 	reg_t cause_code = mcause & MCAUSE_ECODE_MASK;
@@ -70,7 +71,15 @@ reg_t trap_handler(reg_t mepc, reg_t mcause)
 	} else {
 		/* 同步陷阱：异常 */
 		printf("Synchronous exception! Code = %d\n", cause_code);
-		panic("Unhandled synchronous exception!");
+		switch (cause_code) {
+		case ECODE_ECALL_U:
+			uart_puts("System call from U-mode!\n");
+			do_syscall(ctx);
+			return_pc += 4;
+			break;
+		default:
+			panic("Unhandled synchronous exception!");
+		}
 	}
 
 	return return_pc;

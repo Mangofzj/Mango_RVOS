@@ -6,11 +6,13 @@ OBJDUMP := $(CROSS)objdump
 QEMU   := qemu-system-riscv32
 GDB    := gdb-multiarch
 
-CFLAGS := -march=rv32g -mabi=ilp32 -nostdlib -fno-builtin -g -Wall
+DEFS   := -DCONFIG_SYSCALL
+
+CFLAGS := -march=rv32g -mabi=ilp32 -nostdlib -fno-builtin -g -Wall $(DEFS)
 
 # 汇编 / C 源文件：每新增文件就加进对应列表，start.S 必须保持在最前
-SRCS_ASM := start.S mem.S entry.S
-SRCS_C   := kernel.c uart.c printf.c page.c sched.c trap.c user.c plic.c timer.c lock.c
+SRCS_ASM := start.S mem.S entry.S usys.S
+SRCS_C   := kernel.c uart.c printf.c page.c sched.c trap.c user.c plic.c timer.c lock.c syscall.c
 
 OBJS := $(addprefix $(OUT)/, $(SRCS_ASM:.S=.o) $(SRCS_C:.c=.o))
 ELF  := $(OUT)/os.elf

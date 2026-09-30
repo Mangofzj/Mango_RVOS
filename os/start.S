@@ -26,9 +26,23 @@ _start:
 	la	sp, stacks + KERNEL_STACK_SIZE	# 先把 sp 指向第一个栈的末尾
 	add	sp, sp, t0		# 再把当前 hart 的 sp 移到它在栈区中的位置
 
+#ifdef CONFIG_SYSCALL
+	# 用户态访问内存依赖 PMP 授权，这里配一条覆盖全部 32 位物理地址、权限 R/W/X 的条目；QEMU 6.0 起未配置任何 PMP 条目会直接抛异常
+	li	t0, 0xffffffff
+	csrw	pmpaddr0, t0
+	li	t0, 0xf
+	csrw	pmpcfg0, t0
+#endif
+
+#ifdef CONFIG_SYSCALL
+	# schedule() 最终以 mret 切到第一个任务，故先备好 mstatus；清 MPP 为 0 使 mret 后进入用户态
+	li	t0, 3 << 11
+	csrc	mstatus, t0		# MPIE 无需置位，特权级低于 M 时 M 态中断始终全局使能
+#else
 	# schedule() 最终以 mret 切到第一个任务，故先备好 mstatus，不能假设其复位值为 0
 	li	t0, 3 << 11 | 1 << 7	# MPP=3 保持机器态，MPIE=1 使能中断
 	csrs	mstatus, t0
+#endif
 
 	j	start_kernel		# 0 号 hart 跳转到 C 代码
 

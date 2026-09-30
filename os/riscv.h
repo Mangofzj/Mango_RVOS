@@ -11,10 +11,24 @@ static inline reg_t r_tp(void)
 	return val;
 }
 
+/* 读 mhartid 机器态 hart id 寄存器，用户态读会触发非法指令异常 */
+static inline reg_t r_mhartid(void)
+{
+	reg_t val;
+	asm volatile("csrr %0, mhartid" : "=r"(val));
+	return val;
+}
+
 /* mstatus 机器态状态寄存器的掩码 */
-#define MSTATUS_MIE (1 << 3)	/* 机器态全局中断使能 */
-#define MSTATUS_SIE (1 << 1)	/* 监管态全局中断使能 */
-#define MSTATUS_UIE (1 << 0)	/* 用户态全局中断使能 */
+#define MSTATUS_MIE (1 << 3)  /* 机器态全局中断使能 */
+#define MSTATUS_SIE (1 << 1)  /* 监管态全局中断使能 */
+#define MSTATUS_UIE (1 << 0)  /* 用户态全局中断使能 */
+#define MSTATUS_MPP  (3 << 11)  /* 机器态先前特权级字段 */
+#define MSTATUS_SPP  (1 << 8)  /* 监管态先前特权级位 */
+
+#define MSTATUS_MPIE (1 << 7)  /* 机器态先前全局中断使能位 */
+#define MSTATUS_SPIE (1 << 5)  /* 监管态先前全局中断使能位 */
+#define MSTATUS_UPIE (1 << 4)  /* 用户态先前全局中断使能位 */
 
 /* 读 mstatus 机器态状态寄存器 */
 static inline reg_t r_mstatus(void)
@@ -31,9 +45,9 @@ static inline void w_mstatus(reg_t val)
 }
 
 /* mie 机器态中断使能寄存器的掩码 */
-#define MIE_MSIE (1 << 3)	/* 机器态软件中断使能 */
-#define MIE_MTIE (1 << 7)	/* 机器态定时器中断使能 */
-#define MIE_MEIE (1 << 11)	/* 机器态外部中断使能 */
+#define MIE_MSIE (1 << 3)  /* 机器态软件中断使能 */
+#define MIE_MTIE (1 << 7)  /* 机器态定时器中断使能 */
+#define MIE_MEIE (1 << 11)  /* 机器态外部中断使能 */
 
 /* 读 mie 机器态中断使能寄存器 */
 static inline reg_t r_mie(void)
@@ -69,5 +83,8 @@ static inline void w_mscratch(reg_t val)
 #define IRQ_M_SOFTWARE 3
 #define IRQ_M_TIMER 7
 #define IRQ_M_EXTERNAL 11
+
+/* 机器态异常码 */
+#define ECODE_ECALL_U 8
 
 #endif /* __RISCV_H__ */

@@ -75,4 +75,7 @@ struct timer {
 extern struct timer *timer_create(void (*handler)(void *arg), void *arg, uint32_t timeout);
 extern void timer_delete(struct timer *timer);
 
+extern int gethartid(uint32_t *hart);
+extern void do_syscall(struct context *ctx);
+
 #endif /* __KERNEL_H__ */

@@ -88,6 +88,7 @@ trap_vector:
 
 	csrr	a0, mepc		# 调用 trap.c 中用 C 实现的陷阱处理函数
 	csrr	a1, mcause
+	csrr	a2, mscratch
 	call	trap_handler
 
 	csrw	mepc, a0		# trap_handler 通过 a0 返回返回地址
