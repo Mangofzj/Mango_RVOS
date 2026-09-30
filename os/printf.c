@@ -23,6 +23,7 @@ static int vsnprintf(char *out, size_t n, const char *s, va_list vl)
 				}
 				pos++;
 			}
+			/* fall through */
 			case 'x': {
 				long num = is_long ? va_arg(vl, long) : va_arg(vl, int);
 				int hexdigits = 2 * (is_long ? sizeof(long) : sizeof(int)) - 1;

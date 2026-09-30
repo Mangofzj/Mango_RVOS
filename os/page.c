@@ -89,7 +89,7 @@ void page_init(void)
 	 */
 	uint32_t nr_reserved_pages = RAM_SIZE / (PAGE_SIZE * PAGE_SIZE);
 	nr_pages = (HEAP_SIZE - (heap_start_aligned - HEAP_START)) / PAGE_SIZE - nr_reserved_pages;
-	printf("HEAP_START = %p (aligned to %p), HEAP_SIZE = 0x%lx\n"
+	printf("HEAP_START = %p (aligned to %p), HEAP_SIZE = %p\n"
 		"reserved pages = %d, allocatable pages = %d\n",
 		HEAP_START, heap_start_aligned, HEAP_SIZE,
 		nr_reserved_pages, nr_pages);
