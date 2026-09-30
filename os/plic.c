@@ -15,9 +15,6 @@ void plic_init(void)
 
 	/* 使能机器态外部中断 */
 	w_mie(r_mie() | MIE_MEIE);
-
-	/* 使能机器态全局中断 */
-	w_mstatus(r_mstatus() | MSTATUS_MIE);
 }
 
 /**

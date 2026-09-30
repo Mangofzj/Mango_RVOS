@@ -119,6 +119,10 @@ void page_init(void)
  */
 void *page_alloc(int npages)
 {
+	if (npages <= 0 || (uint32_t)npages > nr_pages) {
+		return NULL;
+	}
+
 	/* 注意这里是在页描述符数组上顺序查找 */
 	int found = 0;
 	struct page *candidate = (struct page *)HEAP_START;
@@ -160,7 +164,7 @@ void *page_alloc(int npages)
 void page_free(void *addr)
 {
 	/* addr 非法时应断言（待补） */
-	if (!addr || (ptr_t)addr >= alloc_end) {
+	if (!addr || (ptr_t)addr < alloc_start || (ptr_t)addr >= alloc_end) {
 		return;
 	}
 
